@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 
 export default class Game extends Phaser.Scene {
+    private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+    private penguin?: Phaser.Physics.Matter.Sprite;
     isTouchingGround = false;
 
     constructor() {
@@ -51,27 +53,28 @@ export default class Game extends Phaser.Scene {
 
     update() {
         const speed = 5;
-        if (this.penguin) {
-            if (this.cursors.left.isDown) {
-                this.penguin.flipX = true;
-                this.penguin.setVelocityX(-speed);
-                this.penguin.play('player-walk', true);
-            } else if (this.cursors.right.isDown) {
-                this.penguin.flipX = false;
-                this.penguin.setVelocityX(speed);
-                this.penguin.play('player-walk', true);
-            } else {
-                this.penguin.setVelocityX(0);
-                this.penguin.play('player-idle', true);
-            }
+        if (!this.penguin) {
+            return;
+        }
+        if (this.cursors.left.isDown) {
+            this.penguin.flipX = true;
+            this.penguin.setVelocityX(-speed);
+            this.penguin.play('player-walk', true);
+        } else if (this.cursors.right.isDown) {
+            this.penguin.flipX = false;
+            this.penguin.setVelocityX(speed);
+            this.penguin.play('player-walk', true);
+        } else {
+            this.penguin.setVelocityX(0);
+            this.penguin.play('player-idle', true);
+        }
 
-            const spaceJustPressed = Phaser.Input.Keyboard.JustDown(
-                this.cursors.space
-            );
-            if (spaceJustPressed && this.isTouchingGround) {
-                this.penguin.setVelocityY(-12);
-                this.isTouchingGround = false;
-            }
+        const spaceJustPressed = Phaser.Input.Keyboard.JustDown(
+            this.cursors.space
+        );
+        if (spaceJustPressed && this.isTouchingGround) {
+            this.penguin.setVelocityY(-12);
+            this.isTouchingGround = false;
         }
     }
 
